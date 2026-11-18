@@ -12,6 +12,10 @@ builder.Services.AddDbContext<StoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// AutoMapper configuration
+builder.Services.AddAutoMapper(cfg => { },
+    AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 
