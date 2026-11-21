@@ -12,6 +12,7 @@ public class StoreContext : DbContext
     }
 
     public DbSet<ProductCategory> ProductCategories { get; set; }
+    public DbSet<ProductBrand> ProductBrands { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
