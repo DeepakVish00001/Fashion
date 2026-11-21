@@ -1,4 +1,5 @@
 
+using API.Dtos;
 using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,18 @@ namespace API.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductBrand>>> GetBrands()
+        public async Task<ActionResult<List<BrandsToReturnDto>>> GetBrands()
         {
-            var brands = await context.ProductBrands.ToListAsync();
+            var brands = await context.ProductBrands
+        .Select(x => new BrandsToReturnDto
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Description = x.Description,
+            IsActive = x.IsActive,
+            ProductCategory = x.ProductCategory!.Name
+        })
+        .ToListAsync();
             if (brands == null || brands.Count == 0)
             {
                 return NotFound(new
@@ -33,7 +43,7 @@ namespace API.Controllers
             }
 
             var brandName = brand.Name.Trim();
-            var existingbrand = await context.ProductCategories.FirstOrDefaultAsync(c => c.Name.ToLower() == brandName.ToLower());
+            var existingbrand = await context.ProductBrands.FirstOrDefaultAsync(c => c.Name.ToLower() == brandName.ToLower());
             if (existingbrand != null) return Conflict(new
             {
                 success = false,
@@ -43,7 +53,9 @@ namespace API.Controllers
             var productbrand = new ProductBrand
             {
                 Name = brand.Name,
-                Description = brand.Description
+                Description = brand.Description,
+                IsActive = brand.IsActive,
+                ProductCategoryId = brand.ProductCategoryId
             };
             context.ProductBrands.Add(productbrand);
             var result = await context.SaveChangesAsync();
@@ -123,9 +135,11 @@ namespace API.Controllers
             // 4. Update existing entity
             existingbrand.Name = brandName;
             existingbrand.Description = brand.Description?.Trim();
+            existingbrand.IsActive = brand.IsActive;
+            existingbrand.ProductCategoryId = brand.ProductCategoryId;
             await context.SaveChangesAsync();
 
-            
+
 
             // 6. Return response
             return Ok(new

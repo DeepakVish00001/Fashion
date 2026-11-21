@@ -15,7 +15,7 @@ partial class StoreContextModelSnapshot : ModelSnapshot
     // If you encounter a merge conflict in the line below, it means you need to
     // discard one of the migration branches and recreate its migrations on top of
     // the other branch. See https://aka.ms/efcore-docs-migrations-conflicts for more info.
-    public override string LastMigrationId => "20261121095140_ProductBrandAdd";
+    public override string LastMigrationId => "20261121113037_BrandUpdate";
 
     protected override void BuildModel(ModelBuilder modelBuilder)
     {
@@ -38,15 +38,23 @@ partial class StoreContextModelSnapshot : ModelSnapshot
                     .HasMaxLength(500)
                     .HasColumnType("nvarchar(500)");
 
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit");
+
                 b.Property<string>("Name")
                     .IsRequired()
                     .HasMaxLength(100)
                     .HasColumnType("nvarchar(100)");
 
+                b.Property<int>("ProductCategoryId")
+                    .HasColumnType("int");
+
                 b.HasKey("Id");
 
                 b.HasIndex("Name")
                     .IsUnique();
+
+                b.HasIndex("ProductCategoryId");
 
                 b.ToTable("ProductBrands");
             });
@@ -74,6 +82,22 @@ partial class StoreContextModelSnapshot : ModelSnapshot
                     .IsUnique();
 
                 b.ToTable("ProductCategories");
+            });
+
+        modelBuilder.Entity("Core.Entities.ProductBrand", b =>
+            {
+                b.HasOne("Core.Entities.ProductCategory", "ProductCategory")
+                    .WithMany("ProductBrands")
+                    .HasForeignKey("ProductCategoryId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
+
+                b.Navigation("ProductCategory");
+            });
+
+        modelBuilder.Entity("Core.Entities.ProductCategory", b =>
+            {
+                b.Navigation("ProductBrands");
             });
 #pragma warning restore 612, 618
     }

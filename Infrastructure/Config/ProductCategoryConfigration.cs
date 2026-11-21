@@ -15,5 +15,6 @@ public class ProductCategoryConfigration : IEntityTypeConfiguration<ProductCateg
         builder.HasIndex(x => x.Name).IsUnique();
 
         builder.Property(x => x.Description).HasMaxLength(500);
+        
     }
 }

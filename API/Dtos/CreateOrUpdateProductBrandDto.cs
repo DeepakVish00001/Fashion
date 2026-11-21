@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API;
+namespace API.Dtos;
 
 public class CreateOrUpdateProductBrandDto
 {
@@ -11,4 +11,11 @@ public class CreateOrUpdateProductBrandDto
 
     [MaxLength(500)]
     public string? Description { get; set; }
+
+    public bool IsActive { get; set; } = true;
+
+
+    [Required(ErrorMessage = "Category is required")]
+    [Range(1, int.MaxValue, ErrorMessage = "Please select a valid category")]
+    public int ProductCategoryId { get; set; }
 }

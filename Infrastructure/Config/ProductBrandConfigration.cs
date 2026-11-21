@@ -15,5 +15,10 @@ public class ProductBrandConfigration : IEntityTypeConfiguration<ProductBrand>
         builder.HasIndex(x => x.Name).IsUnique();
 
         builder.Property(x => x.Description).HasMaxLength(500);
+
+        builder.HasOne(c => c.ProductCategory)
+            .WithMany(c => c.ProductBrands)
+            .HasForeignKey(c => c.ProductCategoryId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
